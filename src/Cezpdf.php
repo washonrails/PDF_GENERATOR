@@ -34,36 +34,6 @@ define('EZ_GRIDLINE_ROWS', 2);
  */
 define('EZ_GRIDLINE_COLUMNS', 1);
 
-/**
- * Helper class to create pdf documents via ROS PDF class called 'Cpdf'
- *
- * This class will take the basic interaction facilities of the Cpdf class
- * and make more useful functions so that the user does not have to
- * know all the ins and outs of pdf presentation to produce something pretty.
- * <pre>
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see http://www.gnu.org/licenses/
- * </pre>
- * @category Documents
- * @package Cpdf
- * @version [0.12-rc12] $Id: Cezpdf.php 266 2014-01-13 08:13:42Z ole1986 $
- * @author Wayne Munro, R&OS Ltd, <http://www.ros.co.nz/pdf>
- * @author Ole Koeckemann <ole1986@users.sourceforge.net>
- * @author 2002-07-24: Nicola Asuni <info@tecnick.com>
- * @copyright 2007 - 2013 The authors
- * @license GNU General Public License v3
- * @link http://pdf-php.sf.net
- */
  class Cezpdf extends Cpdf {
 
     /**
@@ -175,10 +145,10 @@ define('EZ_GRIDLINE_COLUMNS', 1);
             }
             switch (strtolower($orientation)){
                 case 'landscape':
-                    $a=$size[3];
-                    $size[3]=$size[2];
-                    $size[2]=$a;
-                    break;
+                  $a=$size[3];
+                  $size[3]=$size[2];
+                  $size[2]=$a;
+                  break;
             }
         } else {
             if (count($paper)>2) {
@@ -1013,13 +983,13 @@ define('EZ_GRIDLINE_COLUMNS', 1);
         // @deprecated Compatibility with 'showLines' option
         if(isset($options['showLines'])){
             switch ($options['showLines']) {
-				case 0:	$options['gridlines'] = 0; break;
-				case 1:	$options['gridlines'] = EZ_GRIDLINE_DEFAULT; break;
-				case 2:	$options['gridlines'] = EZ_GRIDLINE_HEADERONLY + EZ_GRIDLINE_ROWS; break;
-				case 3:	$options['gridlines'] = EZ_GRIDLINE_ROWS; break; 
-				case 4:	$options['gridlines'] = EZ_GRIDLINE_HEADERONLY; break;
-				default: 	$options['gridlines'] = EZ_GRIDLINE_TABLE + EZ_GRIDLINE_HEADERONLY + EZ_GRIDLINE_COLUMNS;
-			}
+				      case 0:	$options['gridlines'] = 0; break;
+				      case 1:	$options['gridlines'] = EZ_GRIDLINE_DEFAULT; break;
+				      case 2:	$options['gridlines'] = EZ_GRIDLINE_HEADERONLY + EZ_GRIDLINE_ROWS; break;
+				      case 3:	$options['gridlines'] = EZ_GRIDLINE_ROWS; break; 
+				      case 4:	$options['gridlines'] = EZ_GRIDLINE_HEADERONLY; break;
+				      default: 	$options['gridlines'] = EZ_GRIDLINE_TABLE + EZ_GRIDLINE_HEADERONLY + EZ_GRIDLINE_COLUMNS;
+			      }
             unset($options['showLines']);
         }
 		
@@ -1040,7 +1010,7 @@ define('EZ_GRIDLINE_COLUMNS', 1);
                 if (empty($row[$colName])) continue;
                 $w = $this->ezGetTextWidth($options['fontSize'],(string)$row[$colName])*1.01;
                 if ($w > $maxWidth[$colName]){
-                    $maxWidth[$colName]=$w;
+                  $maxWidth[$colName]=$w;
                 }
             }
         }

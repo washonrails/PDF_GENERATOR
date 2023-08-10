@@ -1,10 +1,10 @@
 <?php
 $ext = '../extensions/CezDummy.php';
-if(!file_exists($ext)){
-	die('This example requires the CezDummy.php extension');
+if(!file_exists($ext)) {
+    die('This example requires the CezDummy.php extension');
 }
 
-include $ext;
+require $ext;
 $pdf = new CezDummy("a4");
 
 $pdf->selectFont('Helvetica');

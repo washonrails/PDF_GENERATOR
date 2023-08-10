@@ -3,19 +3,21 @@ error_reporting(E_ALL);
 set_time_limit(1800);
 set_include_path('../src/' . PATH_SEPARATOR . get_include_path());
 
-include 'Cezpdf.php';
+require 'Cezpdf.php';
 
-class Creport extends Cezpdf{
-	function Creport($p,$o){
-  		$this->__construct($p, $o,'none',array());
-  		$this->isUnicode = true;
+class Creport extends Cezpdf
+{
+    function Creport($p,$o)
+    {
+        $this->__construct($p, $o, 'none', array());
+        $this->isUnicode = true;
         $this->allowedTags .= '|uline';
-  		// always embed the font for the time being
-  		//$this->embedFont = false;
-	}
+        // always embed the font for the time being
+        //$this->embedFont = false;
+    }
 }
-$pdf = new Creport('a4','portrait');
-$pdf->ezSetMargins(20,20,20,20);
+$pdf = new Creport('a4', 'portrait');
+$pdf->ezSetMargins(20, 20, 20, 20);
 //$pdf->rtl = true; // all text output to "right to left"
 //$pdf->setPreferences('Direction','R2L'); // optional: set the preferences to "Right To Left"
 
@@ -42,9 +44,9 @@ $pdf->ezText("汉语/漢語 <- Some fonts might not contain these glyphs. Tested
 
 // reusing the mainFont does not require to enable unicode with $this->isUnicode
 
-if (isset($_GET['d']) && $_GET['d']){
-  echo $pdf->ezOutput(TRUE);
+if (isset($_GET['d']) && $_GET['d']) {
+    echo $pdf->ezOutput(true);
 } else {
-  $pdf->ezStream();
+    $pdf->ezStream();
 }
 ?>

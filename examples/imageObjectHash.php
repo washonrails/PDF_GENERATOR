@@ -3,20 +3,22 @@ error_reporting(E_ALL);
 set_time_limit(1800);
 set_include_path('../src/' . PATH_SEPARATOR . get_include_path());
 
-include 'Cezpdf.php';
+require 'Cezpdf.php';
 
-class Creport extends Cezpdf{
-	function Creport($p,$o){
-  		$this->__construct($p, $o);
-	}
+class Creport extends Cezpdf
+{
+    function Creport($p,$o)
+    {
+        $this->__construct($p, $o);
+    }
 }
 
-$pdf = new Creport('a4','portrait');
-if (isset($_GET['nohash'])){
-	$pdf->hashed = false;
+$pdf = new Creport('a4', 'portrait');
+if (isset($_GET['nohash'])) {
+    $pdf->hashed = false;
 }
 
-$pdf -> ezSetMargins(20,20,20,20);
+$pdf -> ezSetMargins(20, 20, 20, 20);
 
 $mainFont = 'Times-Roman';
 // select a font
@@ -32,14 +34,14 @@ $pdf->ezText("This image below has a size of <b>".filesize('../ros.jpg').' bytes
 $pdf->ezText("So the object is being hashed and reused 3 times in this examples");
 $pdf->ezText("The XObject always refers to the same object number.");
 $pdf->ezText("Put <b>'?nohash'</b> to disable object hashing\n\n");
-$pdf->ezImage('../ros.jpg',0,0,'none','left');
-$pdf->ezImage('../ros.jpg',0,0,'none','center');
-$pdf->ezImage('../ros.jpg',0,0,'none','right');
+$pdf->ezImage('../ros.jpg', 0, 0, 'none', 'left');
+$pdf->ezImage('../ros.jpg', 0, 0, 'none', 'center');
+$pdf->ezImage('../ros.jpg', 0, 0, 'none', 'right');
 
-if (isset($_GET['d']) && $_GET['d']){
-  echo $pdf->ezOutput(TRUE);
+if (isset($_GET['d']) && $_GET['d']) {
+    echo $pdf->ezOutput(true);
 } else {
-  $pdf->ezStream(array('compress'=>0));
+    $pdf->ezStream(array('compress'=>0));
 }
 
 //error_log($pdf->messages);

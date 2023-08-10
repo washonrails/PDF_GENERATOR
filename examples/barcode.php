@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 set_time_limit(1800);
 set_include_path('../src/' . PATH_SEPARATOR . get_include_path());
 
-include 'Cezpdf.php';
+require 'Cezpdf.php';
 
 function code39($text,$barcodethinwidth=2,$barcodeheight=40,$xpos=0,$ypos=0)
 {
@@ -23,19 +23,21 @@ function code39($text,$barcodethinwidth=2,$barcodeheight=40,$xpos=0,$ypos=0)
         "Z"=> "011010000", " "=> "011000100", "$"=> "010101000",
         "%"=> "000101010", "*"=> "010010100", "+"=> "010001010",
         "-"=> "010000101", "."=> "110000100", "/"=> "010100010");
-	$text  =  strtoupper($text);
-	$text  =  "*$text*";  //  add  start/stop  chars.
-	$textlen  =  strlen($text);
-	$barcodewidth  =  ($textlen)*(7*$barcodethinwidth +  3*$barcodethickwidth)-$barcodethinwidth;
-	for  ($idx=0;$idx<$textlen;$idx++)  {
-        $char  =  substr($text,$idx,1);
+    $text  =  strtoupper($text);
+    $text  =  "*$text*";  //  add  start/stop  chars.
+    $textlen  =  strlen($text);
+    $barcodewidth  =  ($textlen)*(7*$barcodethinwidth +  3*$barcodethickwidth)-$barcodethinwidth;
+    for  ($idx=0;$idx<$textlen;$idx++)  {
+        $char  =  substr($text, $idx, 1);
         //  make  unknown  chars  a  '-';
-        if  (!isset($codingmap[$char]))  $char  =  "-";
+        if  (!isset($codingmap[$char])) {  $char  =  "-";
+        }
         for  ($baridx=0;$baridx<=8;$baridx++)  {
-            $elementwidth  =  (substr($codingmap[$char],$baridx,1))  ?
+            $elementwidth  =  (substr($codingmap[$char], $baridx, 1))  ?
                                                     $barcodethickwidth
-:  $barcodethinwidth;
-            if  (($baridx+1)%2)  $rectangle[] = array('x'=>$xpos,'y'=>$ypos,'b'=>$elementwidth,'h'=>$barcodeheight);
+            :  $barcodethinwidth;
+            if  (($baridx+1)%2) {  $rectangle[] = array('x'=>$xpos,'y'=>$ypos,'b'=>$elementwidth,'h'=>$barcodeheight);
+            }
             $xpos+=$elementwidth;
         }
         $xpos+=$barcodethinwidth;
@@ -43,28 +45,31 @@ function code39($text,$barcodethinwidth=2,$barcodeheight=40,$xpos=0,$ypos=0)
     return $rectangle;
 }
 
-class Creport extends Cezpdf{
-	function Creport($p,$o){
-  		parent::__construct($p,$o);
-	}
-	// Rectangle Callback function for Text output
-	function rect($info){
-  		// this callback records all of the table of contents entries, it also places a destination marker there
-  		// so that it can be linked too
-  		// parameters
-  		$tmp = $info['p'];
-  		$r=explode(",",$tmp);
-  		if(count($r) >= 4){
-  			$this->filledRectangle($info['x']+$r[0],$info['y']+$r[1],$r[2],$r[3]);
-		}
-	}
+class Creport extends Cezpdf
+{
+    function Creport($p,$o)
+    {
+        parent::__construct($p, $o);
+    }
+    // Rectangle Callback function for Text output
+    function rect($info)
+    {
+        // this callback records all of the table of contents entries, it also places a destination marker there
+        // so that it can be linked too
+        // parameters
+        $tmp = $info['p'];
+        $r=explode(",", $tmp);
+        if(count($r) >= 4) {
+            $this->filledRectangle($info['x']+$r[0], $info['y']+$r[1], $r[2], $r[3]);
+        }
+    }
 }
 
-$pdf = new Creport('a4','portrait');
+$pdf = new Creport('a4', 'portrait');
 // IMPORTANT: In version >= 0.12.0 it is required to allow custom tags (by using $pdf->allowedTags) before using it
 $pdf->allowedTags .= "|rect:.*?";
 
-$pdf -> ezSetMargins(50,70,50,50);
+$pdf -> ezSetMargins(50, 70, 50, 50);
 
 $mainFont = 'Helvetica';
 // select a font
@@ -77,27 +82,28 @@ $pdf->openHere('Fit');
 $mydata = array();
 $MAXcodeWidth = 0;
 for($i=0;$i<7;$i++){
-	$const='';
-	$r = rand(1000,9999);
-	// return rectangle array from code39line.php
-	$code39RECT = code39($r,0.8,17,0,-5);
-	foreach($code39RECT as $v){
-		$const.= '<C:rect:'.implode(",",$v).'>';
-		// x position + width
-		if(($v['x'] + $v['b']) > $MAXcodeWidth)
-			$MAXcodeWidth = $v['x'] + $v['b'];
-	}
+    $const='';
+    $r = rand(1000, 9999);
+    // return rectangle array from code39line.php
+    $code39RECT = code39($r, 0.8, 17, 0, -5);
+    foreach($code39RECT as $v){
+        $const.= '<C:rect:'.implode(",", $v).'>';
+        // x position + width
+        if(($v['x'] + $v['b']) > $MAXcodeWidth) {
+            $MAXcodeWidth = $v['x'] + $v['b'];
+        }
+    }
 
-	$mydata[$i]['value'] = $r;
-	$mydata[$i]['barcode'] = $const;
+    $mydata[$i]['value'] = $r;
+    $mydata[$i]['barcode'] = $const;
 }
 $pdf->ezText("This example shows you how to implement code39 barcodes in ROS PDF class. It uses the Callback function 'rect' which is defined in the custom class Creport (inhierted from Cezpdf)\n");
 $pdf->ezText("<b>IMPORTANT: In version >= 0.12.0 it is required to allow custom tags (by using \$pdf->allowedTags) before using it</b>");
-$pdf->ezTable($mydata,array('value'=>'Value','barcode'=>'Barcode'),'',array('showLines'=>3,'shaded'=>0,'rowGap'=>6,'showHeadings'=>1,'cols'=>array('barcode'=>array('width'=>$MAXcodeWidth + 10))));
+$pdf->ezTable($mydata, array('value'=>'Value','barcode'=>'Barcode'), '', array('showLines'=>3,'shaded'=>0,'rowGap'=>6,'showHeadings'=>1,'cols'=>array('barcode'=>array('width'=>$MAXcodeWidth + 10))));
 
-if (isset($_GET['d']) && $_GET['d']){
-  echo $pdf->ezOutput(TRUE);
+if (isset($_GET['d']) && $_GET['d']) {
+    echo $pdf->ezOutput(true);
 } else {
-  $pdf->ezStream();
+    $pdf->ezStream();
 }
 ?>

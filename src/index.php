@@ -1,6 +1,6 @@
 <?php
    //Inclui a classe 'class.ezpdf.php'
-   include("Cezpdf.php");
+   require "Cezpdf.php";
 
    //Instancia um novo documento com o nome de pdf
    $pdf = new Cezpdf();
@@ -20,10 +20,14 @@
    // você pode usar apenas leading ou apenas spacing, nunca os dois
 
    $pdf -> ezText('PDF EM PHP', 20, array('center', 2.0));
-   $pdf -> ezText('Made by Wash', 15,
-   array('left', 3.0));
-   $pdf -> ezText('Follow me on github https://github.com/washonrails', 10,
-   array('right', 1.0));
+$pdf -> ezText(
+    'Made by Wash', 15,
+    array('left', 3.0)
+);
+$pdf -> ezText(
+    'Follow me on github https://github.com/washonrails', 10,
+    array('right', 1.0)
+);
 
    //Gera o PDF
    $pdf -> ezStream();
